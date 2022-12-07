@@ -19,7 +19,11 @@ namespace BlogApp.Api.Tests
 
         public DbFixture()
         {
-            ConnString = $"Server=localhost,1433;Database={BlogDbName};User=sa;Password=2@LaiNw)PDvs^t>L!Ybt]6H^%h3U>M";
+            ConnString = Environment.GetEnvironmentVariable("DBCONNSTRING");
+            if (ConnString != null)
+            {
+                ConnString = ConnString.Replace("{BlogDbName}", BlogDbName);
+            }
 
             var builder = new DbContextOptionsBuilder<BlogDbContext>();
 
