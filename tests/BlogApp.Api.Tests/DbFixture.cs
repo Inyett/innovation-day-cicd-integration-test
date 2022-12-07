@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using Xunit;
+using Serilog;
+using Serilog.Core;
 
 namespace BlogApp.Api.Tests
 {
@@ -15,15 +17,15 @@ namespace BlogApp.Api.Tests
         public readonly string BlogDbName = $"Blog-{Guid.NewGuid()}";
         public readonly string ConnString;
         
+        
         private bool _disposed;
 
         public DbFixture()
         {
+            Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+            Log.Debug("Getting environment variables...");
             ConnString = Environment.GetEnvironmentVariable("DBCONNSTRING");
-            if (ConnString != null)
-            {
-                ConnString = ConnString.Replace("{BlogDbName}", BlogDbName);
-            }
+            ConnString = ConnString?.Replace("{BlogDbName}", BlogDbName);
 
             var builder = new DbContextOptionsBuilder<BlogDbContext>();
 
